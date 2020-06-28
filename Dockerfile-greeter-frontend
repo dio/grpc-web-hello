@@ -1,0 +1,21 @@
+FROM node:14
+
+ADD https://github.com/protocolbuffers/protobuf/releases/download/v3.12.3/protoc-3.12.3-linux-x86_64.zip /usr/local/protoc-3.12.3-linux-x86_64.zip
+WORKDIR /usr/local
+RUN unzip protoc-3.12.3-linux-x86_64.zip
+
+WORKDIR /
+ADD https://github.com/grpc/grpc-web/releases/download/1.2.0/protoc-gen-grpc-web-1.2.0-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
+RUN chmod +x /usr/local/bin/protoc-gen-grpc-web
+
+COPY . /app
+WORKDIR /app
+
+RUN protoc -I=. helloworld.proto \
+  --js_out=import_style=commonjs:. \
+  --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+
+RUN yarn \
+    && yarn build
+
+CMD ["yarn", "serve"]

@@ -1,0 +1,35 @@
+version: "3.7"
+services:
+  front-envoy:
+    image: envoyproxy/envoy-alpine:v1.14.2
+    command: -c /etc/envoy.yaml
+    volumes:
+      - ./envoy.yaml:/etc/envoy.yaml
+    networks:
+      - envoymesh
+    ports:
+      - "8080:8080"
+      - "9901:9901"
+
+  greeter-backend:
+    build:
+      context: .
+      dockerfile: Dockerfile-greeter-backend
+    networks:
+      envoymesh:
+        aliases:
+          - greeter-backend
+
+  greeter-frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile-greeter-frontend
+    networks:
+      envoymesh:
+        aliases:
+          - greeter-backend
+    ports:
+      - "8000:5000"
+
+networks:
+  envoymesh: {}
