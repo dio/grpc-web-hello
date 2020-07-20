@@ -1,13 +1,14 @@
 version: "3.7"
 services:
   front-envoy:
-    image: envoyproxy/envoy-alpine:v1.14.2
-    command: -c /etc/envoy.yaml
+    image: dio123/envoy:grpc-web-debug
+    command: -c /etc/envoy.yaml -l debug
     volumes:
       - ./envoy.yaml:/etc/envoy.yaml
     networks:
       - envoymesh
     ports:
+      - "8000:8000"
       - "8080:8080"
       - "9901:9901"
 
@@ -27,9 +28,9 @@ services:
     networks:
       envoymesh:
         aliases:
-          - greeter-backend
+          - greeter-frontend
     ports:
-      - "8000:5000"
+      - "5000:5000"
 
 networks:
   envoymesh: {}
