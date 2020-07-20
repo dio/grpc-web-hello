@@ -19,7 +19,7 @@ $ curl 'https://ok.local:8080/helloworld.Greeter/SayHello' \
 
 Visiting https://ok.local:8000 surely triggers: "This connection is not private" for Safari and `NET::ERR_CERT_INVALID` for Chrome.
 
-For Safari you can force to visit the website. While in Chrome you can type the magic work: badidea
+For Safari you can force to visit the website. While in Chrome you can type the magic word: badidea
 or thisisunsafe in the page.
 
 ![safari](https://user-images.githubusercontent.com/73152/87927676-c61a8080-caad-11ea-909a-3456a94ab9c9.png)
