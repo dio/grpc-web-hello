@@ -220,3 +220,9 @@ static_resources:
                     socket_address:
                       address: greeter-frontend
                       port_value: 5000
+
+layered_runtime:
+  layers:
+    - name: static_layer
+      static_layer:
+        "envoy.reloadable_features.skip_encoding_empty_trailers": true
