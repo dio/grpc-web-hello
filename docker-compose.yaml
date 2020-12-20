@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   front-envoy:
-    image: dio123/envoy:h2-trailers-debug
+    image: envoyproxy/envoy:v1.16.2
     command: -c /etc/envoy.yaml
     volumes:
       - ./envoy.yaml:/etc/envoy.yaml
