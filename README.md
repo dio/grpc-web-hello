@@ -13,6 +13,8 @@ $ curl 'https://ok.local:8080/helloworld.Greeter/SayHello' \
   --compressed \
   --verbose \
   --insecure
+$ # Kill the backend, docker ps then docker kill <backend pid>
+$ curl 'https://ok.local:8080/helloworld.Greeter/SayHello'
 ```
 
 ## Testing using browser
