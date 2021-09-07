@@ -1,4 +1,4 @@
-# Simple greeter grpc-web service
+# Simple greeter grpc-web, grpc-json transcoding service
 
 ```
 $ docker-compose up -d
@@ -13,8 +13,6 @@ $ curl 'https://ok.local:8080/helloworld.Greeter/SayHello' \
   --compressed \
   --verbose \
   --insecure
-$ # Kill the backend, docker ps then docker kill <backend pid>
-$ curl 'https://ok.local:8080/helloworld.Greeter/SayHello'
 ```
 
 ## Testing using browser
@@ -32,4 +30,11 @@ Add `ok.local` entry in your `/etc/hosts`.
 
 ```
 127.0.0.1        ok.local
+```
+
+For testing if local reply works:
+
+```
+$ # Kill the backend, docker ps then docker kill <backend pid>
+$ curl 'https://ok.local:8080/helloworld.Greeter/SayHello'
 ```
