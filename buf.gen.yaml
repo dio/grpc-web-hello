@@ -1,0 +1,12 @@
+# Copyright 2021 Kementerian Pendidikan dan Kebudayaan Republik Indonesia
+
+version: v1beta1
+plugins:
+  - name: js
+    out: .
+    opt:
+      - import_style=commonjs
+  - name: grpc-web
+    out: .
+    opt:
+      - import_style=commonjs,mode=grpcwebtext

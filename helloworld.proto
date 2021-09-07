@@ -16,9 +16,15 @@ syntax = "proto3";
 
 package helloworld;
 
+import "google/api/annotations.proto";
+
 service Greeter {
   // unary call
-  rpc SayHello(HelloRequest) returns (HelloReply);
+  rpc SayHello(HelloRequest) returns (HelloReply) {
+    option (google.api.http) = {
+      get : "/say/hello"
+    };
+  }
   // server streaming call
   rpc SayRepeatHello(RepeatHelloRequest) returns (stream HelloReply);
 }

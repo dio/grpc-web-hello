@@ -8,14 +8,14 @@ WORKDIR /
 ADD https://github.com/grpc/grpc-web/releases/download/1.2.0/protoc-gen-grpc-web-1.2.0-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
 RUN chmod +x /usr/local/bin/protoc-gen-grpc-web
 
+ADD https://github.com/bufbuild/buf/releases/download/v0.54.1/buf-Linux-x86_64 /usr/local/bin/buf
+RUN chmod +x /usr/local/bin/buf
+
 COPY . /app
 WORKDIR /app
 
-RUN protoc -I=. helloworld.proto \
-  --js_out=import_style=commonjs:. \
-  --grpc-web_out=import_style=commonjs,mode=grpcwebtext:.
+RUN buf generate
 
-RUN yarn \
-    && yarn build
+RUN yarn && yarn build
 
 CMD ["yarn", "serve"]
