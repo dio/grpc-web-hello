@@ -1,8 +1,16 @@
 # Simple greeter grpc-web, grpc-json transcoding service
 
 ```
+$ # Optional, re-generating helloworld.bin needs Go 1.17.x. Note that we have the generated helloworld.bin already.
+$ # Or you can install buf: https://docs.buf.build/installation/ on your system.
+$ go run github.com/bufbuild/buf/cmd/buf@v0.54.1 build -o helloworld.bin
+```
+
+Running and testing the servers (frontend and backend, plus the Envoy front-proxy):
+
+```
 $ docker-compose up -d
-$ # Open browser, point to: https://ok.local:8000 (see Tips below), or
+$ # Open browser, point to: https://ok.local:8000 (see "Tips" section below), or
 $ curl 'https://ok.local:8080/helloworld.Greeter/SayHello' \
   -H 'Accept: application/grpc-web-text' \
   -H 'X-User-Agent: grpc-web-javascript/0.1' \
@@ -10,6 +18,13 @@ $ curl 'https://ok.local:8080/helloworld.Greeter/SayHello' \
   -H 'Content-Type: application/grpc-web-text' \
   -H 'Origin: http://localhost:8000' \
   --data-binary 'AAAAAAcKBVdvcmxk' \
+  --compressed \
+  --verbose \
+  --insecure
+$ # Calling the gRPC-JSON transcoding endpoint
+$ curl 'https://ok.local:8081/say/hello' \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Ok"}' \
   --compressed \
   --verbose \
   --insecure

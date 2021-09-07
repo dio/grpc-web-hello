@@ -1,21 +1,47 @@
-FROM node:14
+# Copyright 2021 Envoyproxy Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+FROM node:16
 
-ADD https://github.com/protocolbuffers/protobuf/releases/download/v3.12.3/protoc-3.12.3-linux-x86_64.zip /usr/local/protoc-3.12.3-linux-x86_64.zip
+ENV PROTOC_VERSION=3.17.3
+ENV PROTOC_GEN_GRPC_WEB=1.2.1
+ENV BUF_VERSION=0.54.1
+
+# Install protoc for generating *_pb.js.
+ADD https://github.com/protocolbuffers/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip \
+  /usr/local/protoc-${PROTOC_VERSION}-linux-x86_64.zip
 WORKDIR /usr/local
-RUN unzip protoc-3.12.3-linux-x86_64.zip
+RUN unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip
 
 WORKDIR /
-ADD https://github.com/grpc/grpc-web/releases/download/1.2.0/protoc-gen-grpc-web-1.2.0-linux-x86_64 /usr/local/bin/protoc-gen-grpc-web
+
+# Install protoc-gen-grpc-web for generating *_grpc_web_pb.js files from *.proto.
+ADD https://github.com/grpc/grpc-web/releases/download/${PROTOC_GEN_GRPC_WEB}/protoc-gen-grpc-web-${PROTOC_GEN_GRPC_WEB}-linux-x86_64 \
+  /usr/local/bin/protoc-gen-grpc-web
 RUN chmod +x /usr/local/bin/protoc-gen-grpc-web
 
-ADD https://github.com/bufbuild/buf/releases/download/v0.54.1/buf-Linux-x86_64 /usr/local/bin/buf
+# Install buf for managing *.proto gen in a single command, also to build the proto descriptor file.
+ADD https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-Linux-x86_64 /usr/local/bin/buf
 RUN chmod +x /usr/local/bin/buf
 
 COPY . /app
 WORKDIR /app
 
+# Generate *.js from helloworld.proto.
 RUN buf generate
 
-RUN yarn && yarn build
+# Install dependencies and transpile all *.js into a bundle.
+RUN yarn install && yarn build
 
+# Serve the frontend service.
 CMD ["yarn", "serve"]

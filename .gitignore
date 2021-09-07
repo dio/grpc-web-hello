@@ -1,2 +1,7 @@
 node_modules
+
+# We generate yarn.lock inside the container.
 yarn.lock
+
+# The built proto descriptor file.
+helloworld.bin

@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+// This file is modified to have annotation added to unary Greeter.SayHello method.
+
 syntax = "proto3";
 
 package helloworld;
@@ -19,21 +21,22 @@ package helloworld;
 import "google/api/annotations.proto";
 
 service Greeter {
-  // unary call
+  // Unary call.
   rpc SayHello(HelloRequest) returns (HelloReply) {
     option (google.api.http) = {
-      get : "/say/hello"
+      post : "/say/hello"
+      body : "*"
     };
   }
-  // server streaming call
-  rpc SayRepeatHello(RepeatHelloRequest) returns (stream HelloReply);
+  // Server streaming call.
+  rpc SayRepeatedHello(RepeatedHelloRequest) returns (stream HelloReply);
 }
 
 message HelloRequest {
   string name = 1;
 }
 
-message RepeatHelloRequest {
+message RepeatedHelloRequest {
   string name = 1;
   int32 count = 2;
 }

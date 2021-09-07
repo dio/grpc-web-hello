@@ -1,19 +1,38 @@
+# Copyright 2021 Envoyproxy Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 version: "3.7"
 services:
   front-envoy:
+    # TODO(dio): Update this to the latest version.
     image: envoyproxy/envoy:v1.16.2
     command: -c /etc/envoy.yaml
     volumes:
       - ./envoy.yaml:/etc/envoy.yaml
+      # This is the generated proto descriptor.
+      # in order to re-generate helloworld.bin, you need Go 1.17.x (go run github.com/bufbuild/buf/cmd/buf@v0.54.1 build -o helloworld.bin).
+      # Or you can install buf: https://docs.buf.build/installation/ on your system.
       - ./helloworld.bin:/etc/helloworld.bin
     networks:
       - envoymesh
     ports:
-      - "8000:8000"
-      - "8080:8080"
-      - "8081:8081"
-      - "9901:9901"
+      - "8000:8000" # Frontend
+      - "8080:8080" # gRPC-Web
+      - "8081:8081" # gRPC-JSON Transcoding
+      - "9901:9901" # Admin
 
+  # Backend service runs on port 9090.
   greeter-backend:
     build:
       context: .
@@ -23,6 +42,7 @@ services:
         aliases:
           - greeter-backend
 
+  # Frontend service runs on port 5000.
   greeter-frontend:
     build:
       context: .
@@ -31,8 +51,6 @@ services:
       envoymesh:
         aliases:
           - greeter-frontend
-    ports:
-      - "5000:5000"
 
 networks:
   envoymesh: {}

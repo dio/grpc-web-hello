@@ -16,12 +16,14 @@
  *
  */
 
-const { HelloRequest, RepeatHelloRequest, HelloReply } = require('./helloworld_pb.js');
+// This is modified to have a way to call transcoding service.
+
+const { HelloRequest, RepeatHelloRequest } = require('./helloworld_pb.js');
 const { GreeterClient } = require('./helloworld_grpc_web_pb.js');
 
 var client = new GreeterClient('https://' + window.location.hostname + ':8080', null, null);
 
-// simple unary call
+// Simple unary call.
 var request = new HelloRequest();
 request.setName('World');
 
@@ -34,7 +36,7 @@ client.sayHello(request, {}, (err, response) => {
   }
 });
 
-// server streaming call
+// Server streaming call.
 var streamRequest = new RepeatHelloRequest();
 streamRequest.setName('World');
 streamRequest.setCount(5);
@@ -48,9 +50,16 @@ stream.on('error', (err) => {
     `, message = "${err.message}"`);
 });
 
-// fetch to transcoder
+// Fetch data from transcoder.
 (async () => {
-  console.log('calling transcoder...');
-  const resp = await fetch('https://' + window.location.hostname + ':8081/say/hello');
-  console.log(await resp.json());
+  // See: The annotation inside the helloworld.proto for Greeter.SayHello method.
+  const resp = await fetch('https://' + window.location.hostname + ':8081/say/hello', {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: 'Transcoded World' })
+  });
+  console.log(await resp.json().messsage);
 })();
