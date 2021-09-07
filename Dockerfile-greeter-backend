@@ -13,20 +13,11 @@
 # limitations under the License.
 FROM node:16
 
-ENV BUF_VERSION=0.54.1
-
-# Install buf for managing *.proto gen in a single command, also to build the proto descriptor file.
-ADD https://github.com/bufbuild/buf/releases/download/v${BUF_VERSION}/buf-Linux-x86_64 /usr/local/bin/buf
-RUN chmod +x /usr/local/bin/buf
-
 COPY . /app
 WORKDIR /app
 
 # Install all dependencies.
 RUN yarn install --production
-
-# Generate proto descriptor file from the defined buf.gen.yaml.
-RUN buf build -o helloworld.bin
 
 # Serve the backend service.
 CMD ["node", "server"]

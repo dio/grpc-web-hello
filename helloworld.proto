@@ -29,14 +29,14 @@ service Greeter {
     };
   }
   // Server streaming call.
-  rpc SayRepeatedHello(RepeatedHelloRequest) returns (stream HelloReply);
+  rpc SayRepeatHello(RepeatHelloRequest) returns (stream HelloReply);
 }
 
 message HelloRequest {
   string name = 1;
 }
 
-message RepeatedHelloRequest {
+message RepeatHelloRequest {
   string name = 1;
   int32 count = 2;
 }

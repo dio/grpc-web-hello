@@ -52,5 +52,12 @@ services:
         aliases:
           - greeter-frontend
 
+  # Echo service runs on port 80.
+  echo:
+    image: solsson/http-echo
+    networks:
+      envoymesh:
+        aliases:
+          - echo
 networks:
   envoymesh: {}

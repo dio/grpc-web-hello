@@ -205,10 +205,14 @@ static_resources:
                     - name: local_service
                       domains: ["*"]
                       routes:
-                        - match: { prefix: "/" }
+                        - match: { prefix: "/helloworld" }
                           route:
                             cluster: greeter_service
                             max_grpc_timeout: 10s
+                        - match: { prefix: "/" }
+                          route:
+                            cluster: echo_service
+                            timeout: 10s
                       cors:
                         allow_origin_string_match:
                           - prefix: "*"
@@ -312,6 +316,21 @@ static_resources:
                     socket_address:
                       address: greeter-backend
                       port_value: 9090
+
+    - name: echo_service
+      connect_timeout: 5s
+      type: LOGICAL_DNS
+      dns_lookup_family: V4_ONLY
+      lb_policy: ROUND_ROBIN
+      load_assignment:
+        cluster_name: echo_service
+        endpoints:
+          - lb_endpoints:
+              - endpoint:
+                  address:
+                    socket_address:
+                      address: echo
+                      port_value: 80
 
     - name: greeter_front
       connect_timeout: 5s
